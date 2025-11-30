@@ -40,7 +40,7 @@ rakuzan.ai/
 
 1. Клонируйте репозиторий:
 ```bash
-git clone <ссылка_на_репозиторий>
+git clone https://github.com/sxvxmx/rakizanai.git
 cd rakuzan.ai
 ```
 
