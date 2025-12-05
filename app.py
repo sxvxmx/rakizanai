@@ -1,9 +1,10 @@
 from flask import Flask, render_template, request, jsonify
 from neuro.utils import ask_advanced
+from dotenv import load_dotenv
 import os
 
 app = Flask(__name__)
-
+load_dotenv()
 
 @app.route("/")
 def index():
