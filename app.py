@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-from neuro.utils import ask_advanced
+from neuro.ask import ask_advanced
 from dotenv import load_dotenv
 import os
 
