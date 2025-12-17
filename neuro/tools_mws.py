@@ -32,7 +32,7 @@ def read_table(table_id, view=None, field_key=None):
     else:
         url = base_url
 
-    headers = {"Authorization": f"Bearer {os.getenv("uskIkjuENVXWmuuEPPvQA2T")}"}
+    headers = {"Authorization": f"Bearer {os.getenv("MWS_API_KEY")}"}
 
     response = requests.get(url, headers=headers)
 
