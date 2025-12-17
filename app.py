@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, jsonify
-from neuro.utils import ask_advanced
+from flask import Flask, render_template, request, Response, stream_with_context
+from neuro.ask import ask_advanced
 from dotenv import load_dotenv
 import os
+import json
 
 app = Flask(__name__)
 load_dotenv()
@@ -10,21 +11,25 @@ load_dotenv()
 def index():
     return render_template("index.html")
 
+@app.route("/api/ask_stream", methods=["POST"])
+def ask_stream():
+    data = request.get_json(force=True)
+    question = data.get("question", "")
+    if not question:
+        return {"error": "question required"}, 400
 
-@app.route("/api/ask", methods=["POST"])
-def api_ask():
-    try:
-        data = request.json
-        question = data.get("question", "")
+    def generate():
+        for token in ask_advanced(question):
+            yield json.dumps({"token": token}) + "\n"
+        yield json.dumps({"done": True}) + "\n"
 
-        if not question:
-            return jsonify({"error": "Question is required"}), 400
-
-        answer = ask_advanced(question)
-
-        return jsonify({"question": question, "answer": answer})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    headers = {
+        "Content-Type": "application/x-ndjson",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "X-Accel-Buffering": "no",
+    }
+    return Response(stream_with_context(generate()), headers=headers)
 
 
 def run_app():
